@@ -51,7 +51,6 @@ fs.writeFileSync(
             }
           </script>
         </body>
-      
         </html>
       `
     )

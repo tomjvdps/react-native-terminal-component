@@ -90,3 +90,16 @@ addKeyDownListener('Tab', viewRefs.input, () => {
 
   setInput(autoCompletionStr);
 });
+
+const dispatch = (type, data = {}) => JSON.stringify({
+  type,
+  data,
+});
+
+// TODO: You need to move this to react-native-gen, this just aids readability
+setTimeout(
+  () => window.postMessage(dispatch(
+    'ACTION_TYPE_READY',
+  )),
+  1000,
+);
