@@ -27,22 +27,13 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {};
-export default class Terminal extends React.Component<Props> {
+export default class Terminal extends React.Component {
   constructor(nextProps) {
     super(nextProps);
     this.__onMessage = this.__onMessage.bind(this);
     this.state = {
       ready: false,
     };
-  }
-  componentDidMount() {
-//    this.refs.terminal.injectJavaScript(
-//      'window.postMessage({});',
-//    );
-  }
-  __renderLoading() {
-
   }
   __handleAction(type, data) {
     const {
