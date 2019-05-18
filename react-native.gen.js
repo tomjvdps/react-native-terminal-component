@@ -118,7 +118,7 @@ fs.writeFileSync(
                   'commandMapping': Terminal.CommandMapping.create({
                     ...Terminal.defaultCommandMapping,
 
-                    `) + " ...{},  "+ escape(`
+                    `) + " \" + \"...{},\" + \" " + escape(`
 
                     'print': {
                       'function': (state, opts) => {
