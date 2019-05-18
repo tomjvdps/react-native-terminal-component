@@ -51,7 +51,6 @@ fs.writeFileSync(
                 target.addEventListener('keydown', e => {
                   if (e.key === eventKey) {
                     onKeyDown();
-              
                     e.preventDefault();
                   }
                 });
@@ -110,7 +109,27 @@ fs.writeFileSync(
               // Execution
               const emulator = new Terminal.Emulator();
               
-              let emulatorState = Terminal.EmulatorState.createEmpty();
+              //let emulatorState = Terminal.EmulatorState.createEmpty();
+              let emulatorState = Terminal.EmulatorState.create({
+                ...Terminal.EmulatorState.createEmpty(),
+                'commandMapping': Terminal.CommandMapping.create({
+                  ...Terminal.defaultCommandMapping,
+                  'print': {
+                    'function': (state, opts) => {
+                      const input = opts.join(' ');
+                      return {
+                        output: Terminal.OutputFactory.makeTextOutput(input),
+                      };
+                    },
+                    'optDef': {},
+                  },
+                }),
+                //'fs': customFileSystem,
+                //'environmentVariables': customEnvVariables,
+                //'history': customHistory,
+                //'outputs': customOutputs,
+              });
+              
               const historyKeyboardPlugin = new Terminal.HistoryKeyboardPlugin(emulatorState);
               const plugins = [historyKeyboardPlugin];
               
