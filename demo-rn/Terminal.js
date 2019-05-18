@@ -6,8 +6,16 @@ import {
   WebView,
   ActivityIndicator,
   View,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
+
+const instructions = Platform.select({
+  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
+  android:
+    'Double tap R on your keyboard to reload,\n' +
+    'Shake or press menu button for dev menu',
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -31,30 +39,70 @@ const styles = StyleSheet.create({
 export default class Terminal extends React.Component {
   static propTypes = {
     commandMapping: PropTypes.shape({}).isRequired,
+    onReady: PropTypes.func,
   }
   static defaultProps = {
     commandMapping: {
       print: {
         optDef: {},
+        function: (Terminal, opts) => {
+          return Terminal.OutputFactory.makeTextOutput(
+            opts
+              .join(' '),
+          );
+        },
       },
       alert: {
+        function: (Terminal, opts) => {
+          Alert.alert(
+            opts
+              .join(' '),
+          );
+        },
         optDef: {},
       },
+    },
+    onReady: (Terminal) => {
+      Terminal.OutputFactory.makeTextOutput(
+        '⚛️  Welcome to React Native!',
+      );
+      Terminal.OutputFactory.makeTextOutput('');
+      Terminal.OutputFactory.makeTextOutput(
+        '✍️ To get started, edit App.js',
+      );
+      Terminal.OutputFactory.makeTextOutput('');
+      Terminal.OutputFactory.makeTextOutput(
+        Platform.OS === 'ios' ? 'Press Cmd+R to reload, Cmd+D or shake for dev menu' : 'Shake or press menu button for dev menu',
+      );
+      Terminal.OutputFactory.makeTextOutput('');
     },
   }
   constructor(nextProps) {
     super(nextProps);
     this.__onMessage = this.__onMessage.bind(this);
+    this.__makeTextOutput = this.__makeTextOutput.bind(this);
     this.state = {
       ready: false,
+      TerminalInterface: {
+        OutputFactory: {
+          makeTextOutput: str => this.__makeTextOutput(str),
+        },
+      },
     };
   }
   // TODO: de-promisify
   __handleAction(type, data) {
     const {
+      commandMapping,
+      onReady,
+    } = this.props;
+    const {
+      // XXX: This naming convention exagerrates the point that
+      //      we're making a bridge between the native environment
+      //      and the WebView.
+      TerminalInterface: Terminal,
       ready,
     } = this.state;
-    // TODO: Where should these constants sit between projects?
     if (type === 'ACTION_TYPE_READY') {
       if (!ready) {
         return new Promise(resolve => this.setState(
@@ -63,14 +111,7 @@ export default class Terminal extends React.Component {
           },
           resolve,
         ))
-          .then(() => {
-            this.__addOutput(
-              'Welcome to React Native!',
-            );
-            this.__addOutput(
-              'Shake to reload.',
-            );
-          });
+          .then(() => onReady(Terminal));
       }
       return Promise.reject(
         new Error(
@@ -85,11 +126,34 @@ export default class Terminal extends React.Component {
         ),
       );
     } else if (type === 'ACTION_TYPE_COMMAND') {
-      this.__addOutput('hi!');
+      const {
+        key,
+        opts,
+      } = data;
+      const {
+        function: nativeFunction,
+      } = (commandMapping[key] || {});
+      if (nativeFunction) {
+        return Promise.resolve(
+          nativeFunction(
+            Terminal,
+            opts,
+          ),
+        );
+      }
+      return Promise.reject(
+        new Error(
+          `Failed to resolve native handler for "${key}"!`,
+        ),
+      );
     }
-    return Promise.resolve();
+    return Promise.reject(
+      new Error(
+        `Unrecognized action "${type}"!`,
+      ),
+    );
   }
-  __addOutput(str = '') {
+  __makeTextOutput(str = '') {
     return this.refs.terminal.injectJavaScript(
       `window.addOutput("${str}");`,
     );
@@ -108,6 +172,20 @@ export default class Terminal extends React.Component {
     }
     return this.__handleAction(type, data);
   }
+  __serializeCommandMapping(commandMapping = {}) {
+    return Object.entries(commandMapping)
+      .reduce(
+        (obj, [key, { optDef }]) => {
+          return {
+            ...obj,
+            [key]: {
+              optDef,
+            },
+          };
+        },
+        {},
+      );
+  }
   render() {
     const {
       commandMapping,
@@ -125,7 +203,9 @@ export default class Terminal extends React.Component {
           source={{
             html: require('./terminal.min.js')(
               // TODO: requires serialiation functions
-              commandMapping,
+              this.__serializeCommandMapping(
+                commandMapping,
+              ),
             ),
           }}
           originWhitelist={['*']}

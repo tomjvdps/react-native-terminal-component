@@ -11,6 +11,7 @@ const propagateVariables = (...names) => names.reduce(
   '',
 )
 
+// XXX: Initialization routine for the Terminal.
 function setup(commandMapping) {
   const dispatch = (type, data = {}) => JSON.stringify({
     type,
@@ -137,23 +138,25 @@ function setup(commandMapping) {
     const autoCompletionStr = emulator.autocomplete(emulatorState, getInput());
     setInput(autoCompletionStr);
   });
+  // XXX: Inform the native runtime that the Terminal has become ready.
   setTimeout(
     () => {
       window.postMessage(dispatch(
       'ACTION_TYPE_READY',
       ));
     },
+    // TODO: Need an asynchronous trigger for when the postMessage
+    //       function becomes available. This implementation is
+    //       coarse and a potential source of error on slow runtimes.
     1000,
   );
-  setTimeout(
-    () => window.postMessage(dispatch(
-      JSON.stringify(commandMapping),
-    )),
-    2000,
-  );
-
 }
 
+// XXX: This operation effectively concatenates the source files from a built
+//      implementation of java-script terminal to generate a new React-Native
+//      source file that can be used to pass dynamic properties based on the 
+//      component props into. The end result is effectively a static string
+//      which React Native is happy to treat as .html source content.
 fs.writeFileSync(
   './demo-rn/terminal.min.js',
   `
@@ -201,7 +204,6 @@ fs.writeFileSync(
                ) + propagateVariables('commandMapping') + escape(
                  `
                  ${setup.toString()}
-                 // XXX: Implement setup.
                  setup(commandMapping);
                  </script>
                </body>
