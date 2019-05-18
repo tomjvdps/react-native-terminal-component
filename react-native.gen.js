@@ -72,16 +72,30 @@ function setup(commandMapping) {
     ...Terminal.EmulatorState.createEmpty(),
     'commandMapping': Terminal.CommandMapping.create({
       ...Terminal.defaultCommandMapping,
-      'print': {
-        'function': (state, opts) => {
-          const input = opts.join(' ');
-          return {
-            output: Terminal.OutputFactory.makeTextOutput(input),
-          };
-        },
-        'optDef': {},
-      },
+      ...Object.entries(commandMapping)
+        .reduce(
+          (obj, [key, { optDef }]) => {
+            return {
+              ...obj,
+              [key]: {
+                function: (state, opts) => {
+                  window.postMessage(dispatch(
+                    'ACTION_TYPE_COMMAND',
+                    {
+                      key,
+                      opts,
+                    },
+                  ));
+                  return {};
+                },
+                optDef,
+              },
+            };
+          },
+          {},
+        ),
     }),
+    // TODO: These require additional implementation props on the native side.
     //'fs': customFileSystem,
     //'environmentVariables': customEnvVariables,
     //'history': customHistory,
@@ -90,6 +104,21 @@ function setup(commandMapping) {
   
   const historyKeyboardPlugin = new Terminal.HistoryKeyboardPlugin(emulatorState);
   const plugins = [historyKeyboardPlugin];
+
+  // XXX: Global
+  window.addOutput = (output) => {
+    emulatorState = emulatorState.setOutputs(
+      Terminal.Outputs.addRecord(
+        emulatorState.getOutputs(),
+        Terminal.OutputFactory.makeTextOutput(
+          output,
+        ),
+      ),
+    );
+    displayOutputs(emulatorState.getOutputs());
+    scrollToPageEnd();
+    clearInput();
+  };
   
   addKeyDownListener('Enter', viewRefs.input, () => {
     const commandStr = getInput();
@@ -109,9 +138,11 @@ function setup(commandMapping) {
     setInput(autoCompletionStr);
   });
   setTimeout(
-    () => window.postMessage(dispatch(
+    () => {
+      window.postMessage(dispatch(
       'ACTION_TYPE_READY',
-    )),
+      ));
+    },
     1000,
   );
   setTimeout(

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   View,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,6 +29,19 @@ const styles = StyleSheet.create({
 });
 
 export default class Terminal extends React.Component {
+  static propTypes = {
+    commandMapping: PropTypes.shape({}).isRequired,
+  }
+  static defaultProps = {
+    commandMapping: {
+      print: {
+        optDef: {},
+      },
+      alert: {
+        optDef: {},
+      },
+    },
+  }
   constructor(nextProps) {
     super(nextProps);
     this.__onMessage = this.__onMessage.bind(this);
@@ -35,6 +49,7 @@ export default class Terminal extends React.Component {
       ready: false,
     };
   }
+  // TODO: de-promisify
   __handleAction(type, data) {
     const {
       ready,
@@ -47,7 +62,15 @@ export default class Terminal extends React.Component {
             ready: true,
           },
           resolve,
-        ));
+        ))
+          .then(() => {
+            this.__addOutput(
+              'Welcome to React Native!',
+            );
+            this.__addOutput(
+              'Shake to reload.',
+            );
+          });
       }
       return Promise.reject(
         new Error(
@@ -55,15 +78,21 @@ export default class Terminal extends React.Component {
         ),
       );
     }
-    Alert.alert(JSON.stringify(type));
     if (!ready) {
       return Promise.reject(
         new Error(
           `Received an action before the Terminal was initialized!`,
         ),
       );
+    } else if (type === 'ACTION_TYPE_COMMAND') {
+      this.__addOutput('hi!');
     }
     return Promise.resolve();
+  }
+  __addOutput(str = '') {
+    return this.refs.terminal.injectJavaScript(
+      `window.addOutput("${str}");`,
+    );
   }
   __onMessage(e) {
     const {
@@ -81,7 +110,7 @@ export default class Terminal extends React.Component {
   }
   render() {
     const {
-
+      commandMapping,
     } = this.props;
     const {
       ready,
@@ -94,7 +123,10 @@ export default class Terminal extends React.Component {
           ref="terminal"
           style={styles.container}
           source={{
-            html: require('./terminal.min.js')({ hi: 'world' }),
+            html: require('./terminal.min.js')(
+              // TODO: requires serialiation functions
+              commandMapping,
+            ),
           }}
           originWhitelist={['*']}
           onMessage={this.__onMessage}
