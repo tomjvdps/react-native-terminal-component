@@ -1,6 +1,23 @@
 const fs = require('fs');
 const escape = require('js-string-escape');
 
+//const commandMapping = \"+JSON.stringify(commandMapping)+\";
+
+//const extractVariables = (...names) => names
+//  .reduce(
+//    (str, name) => {
+//      return `${str}\"+JSON.stringify(commandMapping)+\";`;
+//    },
+//    '',
+//  );
+
+const propagateVariables = (...names) => names.reduce(
+  (str, name) => {
+    return `${str}const ${name} = " + JSON.stringify(commandMapping) + ";`;
+  },
+  '',
+)
+
 fs.writeFileSync(
   './demo-rn/terminal.min.js',
   `
@@ -49,7 +66,10 @@ fs.writeFileSync(
                 }
               </script>
               <script>
-              `) + "const commandMapping = \"+JSON.stringify(commandMapping)+\";" + escape(`
+              `) + propagateVariables(
+                'commandMapping',
+                'commandMapping2',
+              ) + escape(`
 
                 const dispatch = (type, data = {}) => JSON.stringify({
                   type,
@@ -176,7 +196,7 @@ fs.writeFileSync(
                 );
                 setTimeout(
                   () => window.postMessage(dispatch(
-                    JSON.stringify(commandMapping),
+                    JSON.stringify(commandMapping2),
                   )),
                   2000,
                 );
