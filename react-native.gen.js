@@ -3,7 +3,7 @@ const escape = require('js-string-escape');
 
 fs.writeFileSync(
   './demo-rn/terminal.min.js',
-  `module.exports = "${
+  `module.exports = () => "${
     escape(
       `
         <!doctype html>

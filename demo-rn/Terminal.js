@@ -102,7 +102,7 @@ export default class Terminal extends React.Component<Props> {
           ref="terminal"
           style={styles.container}
           source={{
-            html: require('./terminal.min.js'),
+            html: require('./terminal.min.js')(),
           }}
           originWhitelist={['*']}
           onMessage={this.__onMessage}
