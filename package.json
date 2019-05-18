@@ -55,6 +55,7 @@
   "dependencies": {
     "get-options": "^1.1.1",
     "immutable": "^4.0.0-rc.9",
+    "js-string-escape": "^1.0.1",
     "minimatch": "^3.0.4",
     "minimatch-capture": "^1.1.0"
   },
