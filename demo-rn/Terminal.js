@@ -55,6 +55,7 @@ export default class Terminal extends React.Component {
         ),
       );
     }
+    Alert.alert(JSON.stringify(type));
     if (!ready) {
       return Promise.reject(
         new Error(
@@ -93,7 +94,7 @@ export default class Terminal extends React.Component {
           ref="terminal"
           style={styles.container}
           source={{
-            html: require('./terminal.min.js')(),
+            html: require('./terminal.min.js')({ hi: 'world' }),
           }}
           originWhitelist={['*']}
           onMessage={this.__onMessage}

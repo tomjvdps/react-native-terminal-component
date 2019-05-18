@@ -8,7 +8,6 @@ fs.writeFileSync(
     const escape = require('js-string-escape');
 
     module.exports = (commandMapping = {}) => {
-      //Alert.alert(JSON.stringify(commandMapping));
       return "${
         escape(
           `
@@ -50,6 +49,12 @@ fs.writeFileSync(
                 }
               </script>
               <script>
+              `) + "const commandMapping = \"+JSON.stringify(commandMapping)+\";" + escape(`
+
+                const dispatch = (type, data = {}) => JSON.stringify({
+                  type,
+                  data,
+                });
                 const addKeyDownListener = (eventKey, target, onKeyDown) => {
                   target.addEventListener('keydown', e => {
                     if (e.key === eventKey) {
@@ -162,17 +167,18 @@ fs.writeFileSync(
                   setInput(autoCompletionStr);
                 });
                 
-                const dispatch = (type, data = {}) => JSON.stringify({
-                  type,
-                  data,
-                });
-                
                 // TODO: You need to move this to react-native-gen, this just aids readability
                 setTimeout(
                   () => window.postMessage(dispatch(
                     'ACTION_TYPE_READY',
                   )),
                   1000,
+                );
+                setTimeout(
+                  () => window.postMessage(dispatch(
+                    JSON.stringify(commandMapping),
+                  )),
+                  2000,
                 );
   
               </script>
