@@ -117,6 +117,9 @@ fs.writeFileSync(
                   ...Terminal.EmulatorState.createEmpty(),
                   'commandMapping': Terminal.CommandMapping.create({
                     ...Terminal.defaultCommandMapping,
+
+                    `) + " ...{},  "+ escape(`
+
                     'print': {
                       'function': (state, opts) => {
                         const input = opts.join(' ');
