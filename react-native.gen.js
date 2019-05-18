@@ -1,19 +1,12 @@
 const fs = require('fs');
 const escape = require('js-string-escape');
 
-//const commandMapping = \"+JSON.stringify(commandMapping)+\";
-
-//const extractVariables = (...names) => names
-//  .reduce(
-//    (str, name) => {
-//      return `${str}\"+JSON.stringify(commandMapping)+\";`;
-//    },
-//    '',
-//  );
-
+// XXX: This is a helper function to manage the translation between variables
+//       provided from the function call within the react context to the static
+//       JavaScript used to instantiate the Terminal.
 const propagateVariables = (...names) => names.reduce(
   (str, name) => {
-    return `${str}const ${name} = " + JSON.stringify(commandMapping) + ";`;
+    return `${str}const ${name} = " + JSON.stringify(${name}) + ";`;
   },
   '',
 )
@@ -68,7 +61,6 @@ fs.writeFileSync(
               <script>
               `) + propagateVariables(
                 'commandMapping',
-                'commandMapping2',
               ) + escape(`
 
                 const dispatch = (type, data = {}) => JSON.stringify({
@@ -196,7 +188,7 @@ fs.writeFileSync(
                 );
                 setTimeout(
                   () => window.postMessage(dispatch(
-                    JSON.stringify(commandMapping2),
+                    JSON.stringify(commandMapping),
                   )),
                   2000,
                 );
