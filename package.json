@@ -1,6 +1,6 @@
 {
   "name": "react-native-terminal-component",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Emulate a terminal environment in React Native",
   "scripts": {
     "build-rn": "node ./react-native.wrapper",
@@ -8,8 +8,7 @@
     "test": "cross-env NODE_PATH=./src mocha --require babel-core/register --colors './test/**/*.spec.js' './demo-**/**/*.spec.js'",
     "test:min": "yarn run test --reporter min",
     "test:coverage": "nyc yarn run test",
-    "cli": "node demo-cli",
-    "artifact:test-coverage": "nyc --reporter=html yarn run test"
+    "cli": "node demo-cli"
   },
   "repository": {
     "type": "git",
@@ -31,12 +30,6 @@
     "url": "https://github.com/Cawfree/react-native-terminal-component/issues"
   },
   "homepage": "https://github.com/Cawfree/react-native-terminal-component",
-  "nyc": {
-    "exclude": [
-      "test",
-      "lib"
-    ]
-  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -63,9 +56,5 @@
     "js-string-escape": "^1.0.1",
     "minimatch": "^3.0.4",
     "minimatch-capture": "^1.1.0"
-  },
-  "files": [
-    "lib/terminal.js",
-    "lib/terminal.min.js"
-  ]
+  }
 }
