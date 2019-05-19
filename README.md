@@ -1,10 +1,10 @@
 ![logo](https://user-images.githubusercontent.com/816965/38487336-1d193960-3c23-11e8-8da6-9575b0eac3e9.png)
 
-# React Native JavaScript Terminal
+# React Native Terminal Component
 
-This is a React Native wrapper around [rohanchandra]()'s extensible `javascript-terminal` emulator. The goal of this library is to provide a consistent and easily-portable React Native interface to `javascript-terminal`.
+An open-source JavaScript terminal emulator library, that works in your browser, Node.js and React.
 
-An open-source JavaScript terminal emulator library, that works in your browser and Node.js.
+This is a React Native wrapper around [rohanchandra](https://github.com/rohanchandra)'s extensible `javascript-terminal` emulator. The goal of this library is to provide a consistent and easily-portable React Native interface to `javascript-terminal`.
 
 [Demo](https://rohanchandra.gitlab.io/javascript-terminal/demo/)
 
@@ -32,6 +32,7 @@ yarn add react-native-terminal-component
 
 ```javascript
 import React from 'react';
+import { Alert } from 'react-native';
 import Terminal from 'react-native-terminal-component';
 
 export default class App extends React.Component {
@@ -40,6 +41,17 @@ export default class App extends React.Component {
       <Terminal
         style={{
           flex: 1,
+        }}
+        commandMapping={{
+          alert: {
+            function: (Terminal, opts) => {
+              Alert.alert(
+                opts
+                  .join(' '),
+              );
+            }
+            optDef: {},
+          },
         }}
       />
     );
@@ -64,8 +76,8 @@ First, make sure you have  [Node.js](https://nodejs.org/en/download/), [Yarn](ht
 Now, fork and clone repo and install the dependencies.
 
 ```shell
-git clone https://github.com/rohanchandra/javascript-terminal.git
-cd javascript-terminal/
+git clone https://github.com/Cawfree/react-native-terminal-component
+cd react-native-terminal-component/
 yarn install
 ```
 
