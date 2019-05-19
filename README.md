@@ -4,6 +4,11 @@
 
 An open-source JavaScript terminal emulator library, that works in your browser, Node.js and React.
 
+<p align="center">
+  <img src="./raw/anim.gif" alt="React Native Terminal Component">
+</p>
+
+
 This is a React Native wrapper around [rohanchandra](https://github.com/rohanchandra)'s extensible `javascript-terminal` emulator. The goal of this library is to provide a consistent and easily-portable React Native interface to `javascript-terminal`.
 
 [Demo](https://rohanchandra.gitlab.io/javascript-terminal/demo/)
