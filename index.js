@@ -40,6 +40,7 @@ export default class Terminal extends React.Component {
   static propTypes = {
     commandMapping: PropTypes.shape({}).isRequired,
     onReady: PropTypes.func,
+    style: PropTypes.shape({}),
   }
   static defaultProps = {
     commandMapping: {
@@ -76,6 +77,7 @@ export default class Terminal extends React.Component {
       );
       Terminal.OutputFactory.makeTextOutput('');
     },
+    style: styles.container,
   }
   constructor(nextProps) {
     super(nextProps);
@@ -188,6 +190,7 @@ export default class Terminal extends React.Component {
   }
   render() {
     const {
+      style,
       commandMapping,
     } = this.props;
     const {
@@ -195,13 +198,13 @@ export default class Terminal extends React.Component {
     } = this.state;
     return (
       <View
-        style={styles.container}
+        style={style || styles.container}
       >
         <WebView
           ref="terminal"
           style={styles.container}
           source={{
-            html: require('./terminal.min.js')(
+            html: require('./demo-rn/terminal.min.js')(
               // TODO: requires serialiation functions
               this.__serializeCommandMapping(
                 commandMapping,

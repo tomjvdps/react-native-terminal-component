@@ -1,10 +1,11 @@
 {
-  "name": "javascript-terminal",
-  "version": "1.0.2",
-  "description": "Emulate a terminal environment in JavaScript",
+  "name": "react-native-terminal-component",
+  "version": "1.0.1",
+  "description": "Emulate a terminal environment in React Native",
   "main": "lib/terminal.js",
   "unpkg": "lib/terminal.min.js",
   "scripts": {
+    "build-rn": "node ./react-native.wrapper",
     "build": "webpack --mode development && webpack --mode production",
     "test": "cross-env NODE_PATH=./src mocha --require babel-core/register --colors './test/**/*.spec.js' './demo-**/**/*.spec.js'",
     "test:min": "yarn run test --reporter min",
@@ -14,18 +15,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rohanchandra/javascript-terminal.git"
+    "url": "https://github.com/Cawfree/react-native-javascript-terminal.git"
   },
   "keywords": [
+    "react",
+    "react-native",
+    "javascipt",
+    "shell",
+    "command",
+    "line",
     "terminal",
     "emulation"
   ],
-  "author": "Rohan Chandra",
+  "author": "Alex Thomas (@cawfree)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rohanchandra/javascript-terminal/issues"
+    "url": "https://github.com/Cawfree/react-native-terminal-component/issues"
   },
-  "homepage": "https://github.com/rohanchandra/javascript-terminal",
+  "homepage": "https://github.com/Cawfree/react-native-terminal-component",
   "nyc": {
     "exclude": [
       "test",
