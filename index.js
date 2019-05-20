@@ -77,6 +77,10 @@ export default class Terminal extends React.Component {
         Platform.OS === 'ios' ? 'Press Cmd+R to reload, Cmd+D or shake for dev menu' : 'Shake or press menu button for dev menu',
       );
       Terminal.OutputFactory.makeTextOutput('');
+//      Terminal.OutputFactory.makeErrorOutput({
+//        source: 'hello',
+//        type: 'world',
+//      });
     },
     style: styles.container,
     fontSize: 14,
@@ -90,6 +94,7 @@ export default class Terminal extends React.Component {
       TerminalInterface: {
         OutputFactory: {
           makeTextOutput: str => this.__makeTextOutput(str),
+          makeErrorOutput: err => this.__makeErrorOutput(err),
         },
       },
     };
@@ -160,6 +165,11 @@ export default class Terminal extends React.Component {
   __makeTextOutput(str = '') {
     return this.refs.terminal.injectJavaScript(
       `window.addOutput("${str}");`,
+    );
+  }
+  __makeErrorOutput(err) {
+    return this.refs.terminal.injectJavaScript(
+      `window.addErrorOutput(${JSON.stringify(err)});`,
     );
   }
   __onMessage(e) {

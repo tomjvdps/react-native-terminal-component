@@ -107,6 +107,7 @@ function setup(commandMapping) {
   const plugins = [historyKeyboardPlugin];
 
   // XXX: Global
+  // TODO: The following two functions are really similar, condense.
   window.addOutput = (output) => {
     emulatorState = emulatorState.setOutputs(
       Terminal.Outputs.addRecord(
@@ -120,7 +121,20 @@ function setup(commandMapping) {
     scrollToPageEnd();
     clearInput();
   };
-  
+  window.addErrorOutput = (err) => {
+    emulatorState = emulatorState.setOutputs(
+      Terminal.Outputs.addRecord(
+        emulatorState.getOutputs(),
+        Terminal.OutputFactory.makeErrorOutput(
+          err,
+        ),
+      ),
+    );
+    displayOutputs(emulatorState.getOutputs());
+    scrollToPageEnd();
+    clearInput();
+  };
+
   addKeyDownListener('Enter', viewRefs.input, () => {
     const commandStr = getInput();
     emulatorState = emulator.execute(emulatorState, commandStr, plugins);
