@@ -217,7 +217,7 @@ export default class Terminal extends React.Component {
           ref="terminal"
           style={styles.container}
           source={{
-            html: require('./terminal.min.js')(
+            html: require('./demo-rn/terminal.min.js')(
               // TODO: requires serialiation functions
               this.__serializeCommandMapping(
                 commandMapping,

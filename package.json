@@ -1,6 +1,6 @@
 {
   "name": "react-native-terminal-component",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Emulate a terminal environment in React Native",
   "scripts": {
     "build-rn": "node ./react-native.wrapper",
