@@ -162,7 +162,7 @@ fs.writeFileSync(
   `
     const escape = require('js-string-escape');
 
-    module.exports = (commandMapping = {}) => {
+    module.exports = (commandMapping = {}, fontSize = '1.25em') => {
       return "${
         escape(
           `
@@ -180,11 +180,46 @@ fs.writeFileSync(
                    }
                  </style>
                  <style>
-                   ${
-                     fs.readFileSync(
-                       './demo-web/css/main.css',
-                     )
-                   }
+                  html, body {
+                    box-sizing: border-box;
+                    color: white;
+            `)   + "font-size: \"+fontSize+\";" + escape(
+            `
+                  }
+                  *, *:before, *:after {
+                    box-sizing: inherit;
+                  }
+                  body {
+                    padding: 0.5%;
+                  }
+                  body, #input {
+                    background: #171e1d;
+                    font-family: monospace;
+                  }
+                  .input-wrapper {
+                    display: flex;
+                  }
+                  #input, .input-wrapper {
+                    color: #53eb9b;
+                  }
+                  #input {
+                    flex: 2;
+                    border: none;
+                  }
+                  #input:focus {
+                    outline: none;
+                  }
+                  /* Output */
+                  #output-wrapper div {
+                    display: inline-block;
+                    width: 100%;
+                  }
+                  .header-output {
+                    color: #9d9d9d;
+                  }
+                  .error-output {
+                    color: #ff4e4e;
+                  }
                  </style>
                </head>
                <body>
