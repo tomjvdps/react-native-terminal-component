@@ -8,6 +8,7 @@ import {
   View,
   Platform,
 } from 'react-native';
+import {WebView} from 'react-native-webview';
 import PropTypes from 'prop-types';
 
 const instructions = Platform.select({
